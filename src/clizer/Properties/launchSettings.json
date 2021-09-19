@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "clizer": {
+      "commandName": "Project",
+      "commandLineArgs": "slack --load"
+    }
+  }
+}
