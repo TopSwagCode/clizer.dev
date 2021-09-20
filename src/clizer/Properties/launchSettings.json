@@ -2,7 +2,7 @@
   "profiles": {
     "clizer": {
       "commandName": "Project",
-      "commandLineArgs": "slack --load"
+      "commandLineArgs": "slack -s 300*300 -l 0,0 --save"
     }
   }
 }

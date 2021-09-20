@@ -48,9 +48,8 @@ namespace clizer
                 new Option(new[] { "--list-defaults" }, "List defaults.")
             };
             
-            rootCommand.Description = "My sample app";
-
-            // Note that the parameters of the handler method are matched according to the names of the options
+            rootCommand.Description = "Small CLI for moving and resizing windows.";
+            
             rootCommand.Handler = CommandHandler.Create<string, string?, string?, bool, bool, bool>((name, size, location, save, load, listwindows) =>
             {
                 var (locationIsSet,x,y,sizeIsSet,width,height) = ValidateAndParseInput(size, location, save, load);
@@ -59,11 +58,23 @@ namespace clizer
 
                 if (load)
                 {
-                    windowsLocations = LoadFile();
+                    windowsLocations = LoadSavedWindowsConfiguration();
+
+                    if (!string.IsNullOrEmpty(name))
+                    {
+                        foreach (var windowsLocationsKey in windowsLocations.Keys)
+                        {
+                            if (!string.Equals(windowsLocationsKey, name, StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                windowsLocations.Remove(windowsLocationsKey);   
+                            }
+                        }
+                    }
+                    
                 }
                 else if (locationIsSet && sizeIsSet && !string.IsNullOrEmpty(name))
                 {
-                    windowsLocations = LoadFile();
+                    windowsLocations = LoadSavedWindowsConfiguration();
                     windowsLocations[name] = new WindowLocation
                     {
                         X = x,
@@ -73,37 +84,11 @@ namespace clizer
                     };
                 }
 
-                foreach (KeyValuePair<IntPtr, string> window in OpenWindowGetter.GetOpenWindows())
-                {
-                    IntPtr handle = window.Key;
-                    string title = window.Value;
-
-                    foreach(var key in windowsLocations.Keys)
-                    {
-                        if (title.Contains(key, StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            var windowLocation = windowsLocations[key];
-                            MoveWindow(handle, windowLocation.X, windowLocation.Y, windowLocation.Width, windowLocation.Height, true);
-                            SetForegroundWindow(handle);
-                        }
-                    }
-                    
-                    Rectangle rect;
-                    GetWindowRect(handle, out rect);
-
-                    if (listwindows)
-                    {
-                        Console.WriteLine("{0}: {1} - Location: {2},{3} - Size {4}*{5}", handle, title, rect.X, rect.Y, rect.Width - rect.X, rect.Height - rect.Y);
-                    }
-                }
+                MoveAndResizeWindows(windowsLocations, listwindows);
 
                 if (save)
                 {
-                    // TODO
-                    // Overwrite all if more than one rule
-                    // or
-                    // Overwrite single field if only one rule
-
+                    // Default overwrite all for now.
                     var json = JsonSerializer.Serialize(windowsLocations);
                     File.WriteAllText(storagePath, json);
                 }
@@ -112,7 +97,36 @@ namespace clizer
             await rootCommand.InvokeAsync(args);
         }
 
-        private static Dictionary<string, WindowLocation> LoadFile()
+        private static void MoveAndResizeWindows(Dictionary<string, WindowLocation> windowsLocations, bool listwindows)
+        {
+            foreach (KeyValuePair<IntPtr, string> window in OpenWindowGetter.GetOpenWindows())
+            {
+                IntPtr handle = window.Key;
+                string title = window.Value;
+
+                foreach (var key in windowsLocations.Keys)
+                {
+                    if (title.Contains(key, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        var windowLocation = windowsLocations[key];
+                        MoveWindow(handle, windowLocation.X, windowLocation.Y, windowLocation.Width, windowLocation.Height,
+                            true);
+                        SetForegroundWindow(handle);
+                    }
+                }
+
+                Rectangle rect;
+                GetWindowRect(handle, out rect);
+
+                if (listwindows)
+                {
+                    Console.WriteLine("{0}: {1} - Location: {2},{3} - Size {4}*{5}", handle, title, rect.X, rect.Y,
+                        rect.Width - rect.X, rect.Height - rect.Y);
+                }
+            }
+        }
+
+        private static Dictionary<string, WindowLocation> LoadSavedWindowsConfiguration()
         {
             if (!File.Exists(storagePath))
             {
@@ -135,11 +149,7 @@ namespace clizer
             var locationIsSet = !string.IsNullOrEmpty(location);
             var sizeIsSet = !string.IsNullOrEmpty(size);
 
-            if (true)
-            {
-                // Nothing. Disable validation for now!
-            }
-            else if (locationIsSet && !sizeIsSet || sizeIsSet && !locationIsSet)
+            if (locationIsSet && !sizeIsSet || sizeIsSet && !locationIsSet)
             {
                 Console.Error.WriteLine($"{nameof(location)} and {nameof(size)} both need to be set");
             }
