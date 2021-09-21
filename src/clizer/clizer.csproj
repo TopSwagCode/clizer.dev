@@ -1,21 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net5.0</TargetFramework>
     </PropertyGroup>
-
     <PropertyGroup>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>botsay</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
-
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
     </PropertyGroup>
-
     <ItemGroup>
         <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.21308.1" />
     </ItemGroup>
-
 </Project>
