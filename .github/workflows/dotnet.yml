@@ -15,13 +15,13 @@ jobs:
       with:
         dotnet-version: '5.x.x'
     - name: Install dependencies
-      run: dotnet restore .\src\clizer\clizer.csproj
+      run: dotnet restore ./src/clizer/clizer.csproj
     - name: Build
-      run: dotnet build .\src\clizer\clizer.csproj --configuration Release --no-restore
+      run: dotnet build ./src/clizer/clizer.csproj --configuration Release --no-restore
     - name: Publish to NuGet
       uses: brandedoutcast/publish-nuget@v2
       with:
-        PROJECT_FILE_PATH: .\src\clizer\clizer.csproj
+        PROJECT_FILE_PATH: ./src/clizer/clizer.csproj
         VERSION_REGEX: '^\s*<PackageVersion>(.*)<\/PackageVersion>\s*$'
         TAG_FORMAT: '*'
         NUGET_KEY: ${{secrets.NUGET_API_KEY}}
