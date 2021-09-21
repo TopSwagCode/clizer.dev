@@ -1,11 +1,9 @@
 name: Clizer.dev global tool
 
 on:
-  workflow_run:
-    workflows: ["Clizer.dev - CI"]
-    branches: [ master ]
-    types:
-      - completed
+  push:
+    branches:
+      - master
 
 jobs:
   publish-nuget:
