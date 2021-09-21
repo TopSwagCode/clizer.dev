@@ -2,6 +2,9 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net5.0</TargetFramework>
+        <PackageId>topswagcode.clizer.dev</PackageId>
+        <Title>Clizer.dev</Title>
+        <Authors>TopSwagCode</Authors>
     </PropertyGroup>
     <PropertyGroup>
         <PackAsTool>true</PackAsTool>
