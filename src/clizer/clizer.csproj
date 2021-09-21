@@ -6,6 +6,10 @@
     </PropertyGroup>
 
     <PropertyGroup>
+        <PackAsTool>true</PackAsTool>
+        <ToolCommandName>botsay</ToolCommandName>
+        <PackageOutputPath>./nupkg</PackageOutputPath>
+
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
     </PropertyGroup>
