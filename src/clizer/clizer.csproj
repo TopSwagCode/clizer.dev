@@ -5,10 +5,11 @@
         <PackageId>topswagcode.clizer.dev</PackageId>
         <Title>Clizer.dev</Title>
         <Authors>TopSwagCode</Authors>
+        <PackageVersion>1.0.1</PackageVersion>
     </PropertyGroup>
     <PropertyGroup>
         <PackAsTool>true</PackAsTool>
-        <ToolCommandName>botsay</ToolCommandName>
+        <ToolCommandName>clizer</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
